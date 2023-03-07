@@ -1,0 +1,22 @@
+{
+  "name": "com.shield.android.unityplugin",
+  "version": "1.0.0",
+  "displayName": "Shield Unity Plugin",
+  "description": "This is a unity plugin for Shield SDK for iOS and Android (www.shield.com)",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://www.shield.com/",
+  "changelogUrl": "https://www.shield.com/changelog.html",
+  "licensesUrl": "https://www.shield.com/licensing.html",
+ "keywords": [
+    "Shield",
+    "Fraud",
+    "Mobile"
+  ],
+  "author": {
+    "name": "Shield",
+    "email": "mobilesdk@shield.com",
+    "url": "https://www.shield.com"
+  }
+}
+

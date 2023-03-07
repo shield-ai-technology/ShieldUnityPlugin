@@ -1,0 +1,1 @@
+NSString* ToNSString(const char* string);

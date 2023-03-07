@@ -1,0 +1,9 @@
+*.apk
+*DontShip*
+*BurstDebug*
+iOSBuild/
+UserSettings/
+Temp/
+ProjectSettings/
+Logs/
+Library/
