@@ -6,7 +6,9 @@ SHIELD SDK helps developers to assess malicious activities performed on mobile d
 ## Getting Started
 
 ### Install the Library
-//TODO
+
+Download the latest shieldunityplugin.unitypackage from GitHub releases.
+Double click shieldunityplugin.unitypackage to import the package into your Unity project.
 
 ### Initialise the Client
 
