@@ -100,15 +100,20 @@ public class ShieldCodeRunner
     }
 
     public void sendAttributes(string screeName, Dictionary<string, string> data) {
-        AndroidJavaClass shieldClass = new AndroidJavaClass("com.shield.android.Shield");
-        AndroidJavaObject secondShieldObj = shieldClass.CallStatic<AndroidJavaObject>("getInstance");
-        AndroidJavaObject hashMapObj = new AndroidJavaObject("java.util.HashMap");
-        foreach (var (key, value) in data){
-             AndroidJavaObject userIdString = new AndroidJavaObject("java.lang.String", key);
-             AndroidJavaObject userIdValueString = new AndroidJavaObject("java.lang.String", value);
-             hashMapObj.Call<AndroidJavaObject>("put",userIdString, userIdValueString);
+        using (AndroidJavaClass shieldClass = new AndroidJavaClass("com.shield.android.Shield")) {
+            using (AndroidJavaObject secondShieldObj = shieldClass.CallStatic<AndroidJavaObject>("getInstance")) {
+                using (AndroidJavaObject hashMapObj = new AndroidJavaObject("java.util.HashMap")) {
+                     foreach (var (key, value) in data){
+                         using (AndroidJavaObject userIdString = new AndroidJavaObject("java.lang.String", key)) {
+                             using (AndroidJavaObject userIdValueString = new AndroidJavaObject("java.lang.String", value)) {
+                                  hashMapObj.Call<AndroidJavaObject>("put",userIdString, userIdValueString);
+                             }
+                         }                        
+                    }
+                    secondShieldObj.Call("sendAttributes", screeName, hashMapObj);
+                }
+            }
         }
-       
-        secondShieldObj.Call("sendAttributes", screeName, hashMapObj);
+        
     }
 }

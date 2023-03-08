@@ -36,9 +36,8 @@ namespace Shield.Unity
                     codeRunner = new ShieldCodeRunner(siteId, secretKey, callback);
                 }
             #endif
-            Debug.Log(Application.platform + "current application platform: "+ RuntimePlatform.IPhonePlayer);
+            
             #if (UNITY_IPHONE || UNITY_TVOS) 
-                Debug.Log(Application.platform + "current application platform: "+ RuntimePlatform.IPhonePlayer);
                 if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
                     codeRunner = new ShieldiOSCodeRunner(siteId, secretKey, callback);
                 }

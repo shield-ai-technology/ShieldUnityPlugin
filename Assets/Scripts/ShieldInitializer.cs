@@ -17,7 +17,7 @@ public class ShieldInitializer : MonoBehaviour
         shield.setDeviceResultStateCallback(new ShieldDeviceResultStateCallback(){
             IsReady = () => {
                 Debug.Log("Device result is ready");
-            
+                shield.getLatestDeviceResult();
                 var data = new Dictionary<string, string>(){
                 	{"user_id", "12345abcdef"},
     	           {"email", "test@gmail.com"}
