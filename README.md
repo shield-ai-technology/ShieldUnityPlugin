@@ -10,6 +10,7 @@ SHIELD SDK helps developers to assess malicious activities performed on mobile d
 Download the latest shieldunityplugin.unitypackage from GitHub [releases](https://github.com/shield-ai-technology/ShieldUnityPlugin/releases).
 Double click shieldunityplugin.unitypackage to import the package into your Unity project.
 
+Shield sdk needs [unity jar resolver] (https://github.com/googlesamples/unity-jar-resolver) to resolve Android and iOS dependencies.
 ### Initialise the Client
 
 Initialise Shield at the beginning of app launch.
