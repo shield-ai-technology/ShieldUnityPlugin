@@ -9,7 +9,7 @@ public class ShieldInitializer: MonoBehaviour {
 
     ShieldFraud shield = new ShieldFraud("dda05c5ddac400e1c133a360e2714aada4cda052",
       "9ce44f88a25272b6d9cbb430ebbcfcf1", new ShieldCallback() {
-        OnSuccess = (string result) => Debug.Log("Shield sucesss " + result),
+        OnSuccess = (string result) => Debug.Log("Shield callback sucesss " + result),
           OnError = (string error) => Debug.Log(error)
       });
     shield.initShield();

@@ -66,8 +66,9 @@ NSDictionary* createDictionary(const char **dataKeys, const char **dataValues, i
 }
 
 @implementation ShieldWrapper
-
-- (instancetype)initShieldWithSiteId:(const char *)siteId secretKey:(const char *)secretKey {
+ShieldCallbackSuccessFunction _successCallback;
+ShieldCallbackErrorFunction _errorCallback;
+- (instancetype)initShieldWithSiteId:(const char *)siteId secretKey:(const char *)secretKey successCallback: (ShieldCallbackSuccessFunction)successCallback errorCallback: (ShieldCallbackErrorFunction)errorCallback {
     self = [super init];
     if (self) {
         if (!isShieldInitialized){
@@ -76,6 +77,8 @@ NSDictionary* createDictionary(const char **dataKeys, const char **dataValues, i
             config.deviceShieldCallback = self;
             [Shield setUpWith:config];
             isShieldInitialized = YES;
+            _successCallback = successCallback;
+            _errorCallback = errorCallback;
         }
     }
     return self;
@@ -83,12 +86,18 @@ NSDictionary* createDictionary(const char **dataKeys, const char **dataValues, i
 
 - (void)didSuccessWithResult:(NSDictionary<NSString *, id> *)result {
     // Handle successful result here
-    NSLog(@"SHIELD:: success: %@", result);
+    if (result != NULL) {
+            //do something with the result
+            _successCallback(convertNSStringToCString(convertDictionaryToString(result)));
+    } 
 }
 
 - (void)didErrorWithError:(NSError *)error {
     // Handle error here
-    NSLog(@"SHIELD:: error: %@", error);
+     if (error != NULL) {
+            //do something with the result
+            _errorCallback(convertNSStringToCString(error.localizedDescription));
+    } 
 }
 
 - (NSString *)getSessionId {
@@ -144,9 +153,9 @@ NSDictionary* createDictionary(const char **dataKeys, const char **dataValues, i
 
 static ShieldWrapper *ShieldWrapperIns;
 
-void ShieldWrapper_initShieldWithSiteId(const char *siteId, const char *secretKey) {
+void ShieldWrapper_initShieldWithSiteId(const char *siteId, const char *secretKey, ShieldCallbackSuccessFunction successCallback, ShieldCallbackErrorFunction errorCallback ) {
     if (!ShieldWrapperIns) {
-        ShieldWrapperIns = [[ShieldWrapper alloc] initShieldWithSiteId:siteId secretKey:secretKey];
+        ShieldWrapperIns = [[ShieldWrapper alloc] initShieldWithSiteId:siteId secretKey:secretKey successCallback:successCallback errorCallback:errorCallback];
     }
 }
 

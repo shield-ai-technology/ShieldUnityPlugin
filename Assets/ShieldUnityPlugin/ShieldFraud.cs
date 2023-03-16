@@ -24,7 +24,7 @@ namespace Shield.Unity
         #if UNITY_ANDROID
             private ShieldCodeRunner codeRunner;
         #endif
-        #if (UNITY_IPHONE || UNITY_TVOS) 
+        #if (UNITY_IOS || UNITY_TVOS) 
             private ShieldiOSCodeRunner codeRunner;
         #endif
         public ShieldFraud(string siteId, string secretKey, ShieldCallback callback = null) {
@@ -37,7 +37,7 @@ namespace Shield.Unity
                 }
             #endif
             
-            #if (UNITY_IPHONE || UNITY_TVOS) 
+            #if (UNITY_IOS || UNITY_TVOS) 
                 if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
                     codeRunner = new ShieldiOSCodeRunner(siteId, secretKey, callback);
                 }
