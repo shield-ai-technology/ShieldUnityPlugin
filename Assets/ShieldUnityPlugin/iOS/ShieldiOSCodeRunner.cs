@@ -11,6 +11,7 @@ public class ShieldiOSCodeRunner {
   private string siteId;
   private string secretKey;
   private ShieldCallback callback;
+  private static ShieldDeviceResultStateCallback deviceResultStateCallbackStatic;
 
   public ShieldiOSCodeRunner(string siteId, string secretKey, ShieldCallback callback = null) {
     this.siteId = siteId;
@@ -26,8 +27,22 @@ public class ShieldiOSCodeRunner {
   private static extern string ShieldWrapper_getSessionId();
 
   [DllImport("__Internal")]
+  private static extern string ShieldWrapper_getLatestDeviceResult();
+
+  [DllImport("__Internal")]
   private static extern void sendAttributes(string screenName, string[] dataKeys, string[] dataValues, int numItems);
 
+  private delegate void DelegateMessage();
+
+  [AOT.MonoPInvokeCallback(typeof (DelegateMessage))]
+  private static void delegateMessageReceived() {
+    if (ShieldiOSCodeRunner.deviceResultStateCallbackStatic != null) {
+      ShieldiOSCodeRunner.deviceResultStateCallbackStatic.IsReady();
+    }
+  }
+
+  [DllImport("__Internal")]
+  private static extern void _Shield_set_device_result_callback(DelegateMessage delegateMessageFunc);
   #endif
 
   public void initShield() {
@@ -43,13 +58,15 @@ public class ShieldiOSCodeRunner {
     return ShieldWrapper_getSessionId();
   }
 
-  public void setDeviceResultStateCallback(ShieldDeviceResultStateCallback deviceResultStateClalback) {
-    // TODO: implement this method
+  public void setDeviceResultStateCallback(ShieldDeviceResultStateCallback deviceResultStateCallback) {
+    Debug.Log("trying to sync the delegate from C#");
+    ShieldiOSCodeRunner.deviceResultStateCallbackStatic = deviceResultStateCallback;
+    _Shield_set_device_result_callback(delegateMessageReceived);
   }
 
   public string getLatestDeviceResult() {
     Debug.Log("getLatestDeviceResult IS CALLED");
-    return "TODO::";
+    return ShieldWrapper_getLatestDeviceResult();
   }
 
   public void sendAttributes(string screenName, Dictionary < string, string > data) {

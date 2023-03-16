@@ -88,30 +88,21 @@ NSDictionary* createDictionary(const char **dataKeys, const char **dataValues, i
     }
 }
 
-- (void)getLatestDeviceResultsWithCompletionHandler:(void (^)(NSString *result, NSString *error))completionHandler {
+- (NSString *)getLatestDeviceResult {
     if (isShieldInitialized) {
-        NSLog(@"getLatestDeviceResults ios code entered");
-        [[Shield shared] setDeviceResultStateListener:^{
-            NSDictionary<NSString *, id> *result = [[Shield shared] getLatestDeviceResult];
-            if (result != NULL) {
-                //do something with the result
-                NSString *resultString = convertDictionaryToString(result);
-                NSLog(@"SHIELD_INIT_DONE:: Latest Device Result %@", resultString);
-                completionHandler(resultString, nil);
-            } else {
-                NSError *error = [[Shield shared] getErrorResponse];
-                NSString *errorMessage = nil;
-                if (error != NULL) {
-                    errorMessage = getErrorDescription(error);
-                } else {
-                    errorMessage = @"Unknown error occurred.";
-                }
-                completionHandler(nil, errorMessage);
+        NSDictionary<NSString *, id> *result = [[Shield shared] getLatestDeviceResult];
+        if (result != NULL) {
+            //do something with the result
+            return convertDictionaryToString(result);
+        } else {
+            NSError *error = [[Shield shared] getErrorResponse];
+            if (error != NULL) {
+                // log error
+                return getErrorDescription(error);
             }
-        }];
-    } else {
-        completionHandler(nil, @"SHIELD_INIT_FAILED:: No Device Result");
+        }
     }
+    return @"SHIELD_INIT_FAILED:: No Device Result";
 }
 
 - (void)sendAttributes:(NSString *)screenName params:(NSDictionary *)data{
@@ -123,6 +114,19 @@ NSDictionary* createDictionary(const char **dataKeys, const char **dataValues, i
     }
 }
 
+- (void)setDeviceResultsCallback:(DeviceResultCallbackFunction)deviceResultCallback{
+    //Adding manual delay of 2 secs
+    NSTimeInterval delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        if (isShieldInitialized) {
+            NSLog(@"getLatestDeviceResults ios code entered");
+            [[Shield shared] setDeviceResultStateListener:^{
+                deviceResultCallback();
+            }];
+        }
+    });
+}
 
 @end
 
@@ -142,20 +146,12 @@ char* ShieldWrapper_getSessionId(){
     return convertNSStringToCString(sessionId);
 }
 
-void ShieldWrapper_getLatestDeviceResults_completionHandler(void (*completion_handler)(const char *result, const char *error)) {
-    @autoreleasepool {
-        [ShieldWrapperIns getLatestDeviceResultsWithCompletionHandler:^(NSString *result, NSString *error) {
-            const char *resultCString = NULL;
-            const char *errorCString = NULL;
-            if (result != nil) {
-                resultCString = convertNSStringToCString(result);
-            }
-            if (error != nil) {
-                errorCString = convertNSStringToCString(error);
-            }
-            completion_handler(resultCString, errorCString);
-        }];
+char* ShieldWrapper_getLatestDeviceResult(){
+    if (!ShieldWrapperIns){
+        return  NULL;
     }
+    const NSString* getLatestDeviceResult = [ShieldWrapperIns getLatestDeviceResult];
+    return convertNSStringToCString(getLatestDeviceResult);
 }
 
 void sendAttributes(const char *screenName, const char **dataKeys, const char **dataValues, int numItems) {
@@ -164,3 +160,9 @@ void sendAttributes(const char *screenName, const char **dataKeys, const char **
     NSLog(@"SHIELD:: sendAttributes Payload: %@\n%@", Dictionary, ToNSString(screenName));
     [ShieldWrapperIns sendAttributes: ToNSString(screenName) params: Dictionary];
 }
+
+void _Shield_set_device_result_callback(DeviceResultCallbackFunction deviceResultCallback) {
+    [ShieldWrapperIns setDeviceResultsCallback:deviceResultCallback];
+}
+
+
