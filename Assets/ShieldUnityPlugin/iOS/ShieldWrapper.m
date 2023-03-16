@@ -2,7 +2,6 @@
 #import <ShieldFraud/ShieldFraud.h>
 
 static BOOL isShieldInitialized = NO;
-
 char* ToCString(const NSString* nsString)
 {
     if (nsString == NULL)
@@ -24,12 +23,20 @@ NSString* ToNSString(const char* string) {
 }
 
 void _Shield_init(const char* siteId, const char* secretKey) {
-    if (!isShieldInitialized) 
+    if (!isShieldInitialized)
     {
       Configuration *config = [[Configuration alloc] initWithSiteId:ToNSString(siteId) secretKey:ToNSString(secretKey)];
       [Shield setUpWith:config];
       isShieldInitialized = YES;
     }
+}
+
+
+void _Shield_set_device_result_callback(DeviceResultCallbackFunction deviceResultCallback) {
+
+  [[Shield shared] setDeviceResultStateListener:^{ // 
+    deviceResultCallback();
+  }];
 }
 
 
@@ -50,3 +57,4 @@ char* _Shield_get_session_id() {
         return ToCString(@"");
     }
 }
+
