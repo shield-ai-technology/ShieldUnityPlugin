@@ -15,24 +15,18 @@ public class ShieldInitializer: MonoBehaviour {
     shield.initShield();
     shield.setDeviceResultStateCallback(new ShieldDeviceResultStateCallback() {
       IsReady = () => {
-        Debug.Log("Device result is ready");
-
-        Debug.Log("session id: " + shield.getSessionId());
-
+        Debug.Log("SHIELD:: Device result is ready");
+        Debug.Log("SHIELD:: session id: " + shield.getSessionId());
         var data = new Dictionary < string, string > () {
             {"user_id", "12345abcdef"}, 
             {"email", "test@gmail.com"}
           };
-          
-        Debug.Log("sending attributes");
+        Debug.Log("SHIELD:: sending attributes");
         shield.sendAttributes("test", data);
-        Debug.Log("sending attributes success");
-
-        Debug.Log("GET LATEST DEVICE RESULT: " + shield.getLatestDeviceResult());
+        Debug.Log("SHIELD:: sending attributes success");
+        Debug.Log("SHIELD:: get latest device results: " + shield.getLatestDeviceResult());
       }
     });
-
-    Debug.Log("Sending attributes...");
   }
 
   // Update is called once per frame

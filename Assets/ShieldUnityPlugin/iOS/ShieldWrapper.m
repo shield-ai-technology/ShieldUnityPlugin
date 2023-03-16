@@ -72,7 +72,6 @@ ShieldCallbackErrorFunction _errorCallback;
     self = [super init];
     if (self) {
         if (!isShieldInitialized){
-            NSLog(@"shield trying to initialize");
             Configuration *config = [[Configuration alloc] initWithSiteId:ToNSString(siteId) secretKey:ToNSString(secretKey)];
             config.deviceShieldCallback = self;
             [Shield setUpWith:config];
@@ -114,11 +113,13 @@ ShieldCallbackErrorFunction _errorCallback;
         NSDictionary<NSString *, id> *result = [[Shield shared] getLatestDeviceResult];
         if (result != NULL) {
             //do something with the result
+            NSLog(@"SHIELD_INIT_DONE:: LATEST DEVICE RESULT IS SUCCESSFUL");
             return convertDictionaryToString(result);
         } else {
             NSError *error = [[Shield shared] getErrorResponse];
             if (error != NULL) {
                 // log error
+                NSLog(@"SHIELD_INIT_DONE:: LATEST DEVICE RESULT IS ERROR");
                 return getErrorDescription(error);
             }
         }
@@ -130,8 +131,10 @@ ShieldCallbackErrorFunction _errorCallback;
     if (isShieldInitialized) {
         [[Shield shared] setDeviceResultStateListener:^{
             [[Shield shared] sendAttributesWithScreenName:screenName data:data];
-            NSLog(@"SHIELD:: Attributes Sent");
+            NSLog(@"SHIELD_INIT_DONE:: Attributes Sent");
         }];
+    } else {
+            NSLog(@"SHIELD_INIT_FAILED:: Attributes NOT Sent");
     }
 }
 
@@ -141,8 +144,8 @@ ShieldCallbackErrorFunction _errorCallback;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         if (isShieldInitialized) {
-            NSLog(@"getLatestDeviceResults ios code entered");
             [[Shield shared] setDeviceResultStateListener:^{
+                NSLog(@"SHIELD_INIT_DONE:: SDK READY");
                 deviceResultCallback();
             }];
         }
