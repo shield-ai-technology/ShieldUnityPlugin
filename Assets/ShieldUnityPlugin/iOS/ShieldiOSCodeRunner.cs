@@ -19,10 +19,10 @@ public class ShieldiOSCodeRunner {
     ShieldiOSCodeRunner.callbackStatic = callback;
   }
 
-  #if(UNITY_IPHONE || UNITY_TVOS)
+  #if(UNITY_IOS || UNITY_TVOS)
   [DllImport("__Internal")]
-  private static extern void ShieldWrapper_initShieldWithSiteId(string siteId, string secretKey, DelegateShieldCallbackSuccessMessage shieldCallbackSuccessDelegate, 
-  DelegateShieldCallbackErrorMessage shieldCallbackErrorDelegate);
+  private static extern void ShieldWrapper_initShieldWithSiteId(string siteId, string secretKey, DelegateShieldCallbackSuccessMessage shieldCallbackSuccessDelegate,
+    DelegateShieldCallbackErrorMessage shieldCallbackErrorDelegate);
 
   [DllImport("__Internal")]
   private static extern string ShieldWrapper_getSessionId();
@@ -42,7 +42,7 @@ public class ShieldiOSCodeRunner {
     }
   }
 
-   private delegate void DelegateShieldCallbackSuccessMessage(string result);
+  private delegate void DelegateShieldCallbackSuccessMessage(string result);
 
   [AOT.MonoPInvokeCallback(typeof (DelegateShieldCallbackSuccessMessage))]
   private static void delegateShieldCallbackSuccessMessageReceived(string result) {
@@ -51,7 +51,7 @@ public class ShieldiOSCodeRunner {
     }
   }
 
-   private delegate void DelegateShieldCallbackErrorMessage(string error);
+  private delegate void DelegateShieldCallbackErrorMessage(string error);
 
   [AOT.MonoPInvokeCallback(typeof (DelegateShieldCallbackErrorMessage))]
   private static void delegateShieldCallbackErrorMessageReceived(string error) {
@@ -65,30 +65,36 @@ public class ShieldiOSCodeRunner {
   #endif
 
   public void initShield() {
-    Debug.Log("shield checking initialize");
+    #if(UNITY_IOS || UNITY_TVOS)
     if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
-      Debug.Log("shield intialize");
       ShieldWrapper_initShieldWithSiteId(siteId, secretKey, delegateShieldCallbackSuccessMessageReceived, delegateShieldCallbackErrorMessageReceived);
     }
+    #endif
   }
 
   public string getSessionId() {
-    Debug.Log("shield session id is being fetched");
+    #if(UNITY_IOS || UNITY_TVOS)
     return ShieldWrapper_getSessionId();
+    #endif
+    return "";
   }
 
   public void setDeviceResultStateCallback(ShieldDeviceResultStateCallback deviceResultStateCallback) {
-    Debug.Log("trying to sync the delegate from C#");
+    #if(UNITY_IOS || UNITY_TVOS)
     ShieldiOSCodeRunner.deviceResultStateCallbackStatic = deviceResultStateCallback;
     _Shield_set_device_result_callback(delegateDeviceResultReadyMessageReceived);
+    #endif
   }
 
   public string getLatestDeviceResult() {
-    Debug.Log("getLatestDeviceResult IS CALLED");
+    #if(UNITY_IOS || UNITY_TVOS)
     return ShieldWrapper_getLatestDeviceResult();
+    #endif
+    return "";
   }
 
   public void sendAttributes(string screenName, Dictionary < string, string > data) {
+    #if(UNITY_IOS || UNITY_TVOS)
     int numItems = data.Count;
     string[] dataKeys = new string[numItems];
     string[] dataValues = new string[numItems];
@@ -103,6 +109,7 @@ public class ShieldiOSCodeRunner {
     if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
       sendAttributes(screenName, dataKeys, dataValues, numItems);
     }
+    #endif
   }
-}
 
+}
