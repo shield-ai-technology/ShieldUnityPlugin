@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Shield.Unity;
+
 public class ShieldCodeRunner {
   private string siteId;
   private string secretKey;
   private ShieldCallback callback;
+  
   public ShieldCodeRunner(string siteId, string secretKey, ShieldCallback callback = null) {
     this.siteId = siteId;
     this.secretKey = secretKey;
     this.callback = callback;
   }
+
   // Start is called before the first frame update
   class AndroidShieldCallback: AndroidJavaProxy {
     public string siteId;
@@ -95,21 +98,20 @@ public class ShieldCodeRunner {
     return resultStr;
   }
 
-  public void sendAttributes(string screeName, Dictionary < string, string > data) {
+  public void sendAttributes(string screenName, Dictionary < string, string > data) {
     using(AndroidJavaClass shieldClass = new AndroidJavaClass("com.shield.android.Shield")) {
-      using(AndroidJavaObject secondShieldObj = shieldClass.CallStatic < AndroidJavaObject > ("getInstance")) {
+      using(AndroidJavaObject shieldObj = shieldClass.CallStatic < AndroidJavaObject > ("getInstance")) {
         using(AndroidJavaObject hashMapObj = new AndroidJavaObject("java.util.HashMap")) {
-          foreach(var (key, value) in data) {
-            using(AndroidJavaObject userIdString = new AndroidJavaObject("java.lang.String", key)) {
-              using(AndroidJavaObject userIdValueString = new AndroidJavaObject("java.lang.String", value)) {
-                hashMapObj.Call < AndroidJavaObject > ("put", userIdString, userIdValueString);
+          foreach(KeyValuePair < string, string > pair in data) {
+            using(AndroidJavaObject keyString = new AndroidJavaObject("java.lang.String", pair.Key)) {
+              using(AndroidJavaObject valueString = new AndroidJavaObject("java.lang.String", pair.Value)) {
+                hashMapObj.Call < string > ("put", keyString, valueString);
               }
             }
           }
-          secondShieldObj.Call("sendAttributes", screeName, hashMapObj);
+          shieldObj.Call("sendAttributes", screenName, hashMapObj);
         }
       }
     }
-
   }
 }
