@@ -45,27 +45,43 @@ namespace Shield.Unity
         }
 
         public void initShield() {
-            if (!ShieldFraud.isShieldInitialized) {
-                codeRunner.initShield();
-                ShieldFraud.isShieldInitialized = true;
+            #if (UNITY_IOS || UNITY_TVOS || UNITY_ANDROID) 
+                if (!ShieldFraud.isShieldInitialized) {
+                  codeRunner.initShield();
+                  ShieldFraud.isShieldInitialized = true;
 
             }
+            #endif
         }
 
         public string getSessionId() { 
-            return codeRunner.getSessionId();
+            #if (UNITY_IOS || UNITY_TVOS || UNITY_ANDROID) 
+                return codeRunner.getSessionId();
+            #else
+                return "";
+            #endif
+    
         }
 
         public void setDeviceResultStateCallback(ShieldDeviceResultStateCallback deviceResultStateClalback) {
-            codeRunner.setDeviceResultStateCallback(deviceResultStateClalback);
+            #if (UNITY_IOS || UNITY_TVOS || UNITY_ANDROID) 
+                codeRunner.setDeviceResultStateCallback(deviceResultStateClalback);
+            #endif
         }
 
         public string getLatestDeviceResult() {
-            return codeRunner.getLatestDeviceResult();
+            #if (UNITY_IOS || UNITY_TVOS || UNITY_ANDROID) 
+                return codeRunner.getLatestDeviceResult();
+            #else
+                return "";
+            #endif
         }
 
         public void sendAttributes(string screeName, Dictionary<string, string> data) {
-            codeRunner.sendAttributes(screeName, data);
+            #if (UNITY_IOS || UNITY_TVOS || UNITY_ANDROID) 
+                codeRunner.sendAttributes(screeName, data);
+            #endif
+            
         }
     }
 
