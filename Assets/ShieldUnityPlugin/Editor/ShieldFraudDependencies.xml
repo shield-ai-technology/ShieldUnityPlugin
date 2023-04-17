@@ -23,7 +23,7 @@
          Additional repositories can be added using the "repositories" element.
     -->
 
-    <androidPackage spec="com.shield.android:shield-fraud:1.6.+">
+    <androidPackage spec="com.shield.android:shield-fraud:1.6.7">
         <repositories>
           <repository>https://cashshield-sdk.s3.amazonaws.com/release/</repository>
         </repositories>
