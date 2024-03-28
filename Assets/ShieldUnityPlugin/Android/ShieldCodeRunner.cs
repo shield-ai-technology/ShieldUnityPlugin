@@ -28,8 +28,9 @@ public class ShieldCodeRunner {
       }
     }
     public void onFailure(AndroidJavaObject error) {
+      string errorMessage = error.Call < string > ("getLocalizedMessage");
       if (callback != null) {
-        callback.OnError("error fetching device intelligence");
+        callback.OnError(errorMessage);
       }
     }
 
