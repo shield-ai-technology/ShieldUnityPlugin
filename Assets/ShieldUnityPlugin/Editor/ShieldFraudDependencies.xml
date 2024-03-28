@@ -23,7 +23,7 @@
          Additional repositories can be added using the "repositories" element.
     -->
 
-    <androidPackage spec="com.shield.android:shield-fraud:1.6.12">
+    <androidPackage spec="com.shield.android:shield-fraud:1.6.21">
         <repositories>
           <repository>https://cashshield-sdk.s3.amazonaws.com/release/</repository>
         </repositories>
@@ -66,7 +66,7 @@
          * "subspecs" (optional)
            Subspecs to include for the pod.
      -->
-    <iosPod name="ShieldFraud" version="1.5.22" bitcodeEnabled="true"
+    <iosPod name="ShieldFraud" version="1.5.37" bitcodeEnabled="true"
         addToAllTargets="true">
       <!-- Set of source URIs to search for this Cocoapod spec.
            By default Cocoapods will attempt to fetch the pod specs from:

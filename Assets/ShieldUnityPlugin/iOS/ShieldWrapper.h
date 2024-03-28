@@ -1,6 +1,6 @@
 
 #import <Foundation/Foundation.h>
-#import <ShieldFraud/ShieldFraud.h>
+#import <ShieldFraud/ShieldFraud-Swift.h>
 typedef void (*ShieldCallbackSuccessFunction)(const char* result);
 typedef void (*ShieldCallbackErrorFunction)(const char* error);
 extern void ShieldWrapper_initShieldWithSiteId(const char *siteId, const char *secretKey, ShieldCallbackSuccessFunction successCallback, ShieldCallbackErrorFunction errorCallback);
